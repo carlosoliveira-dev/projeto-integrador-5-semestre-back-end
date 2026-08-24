@@ -1,0 +1,30 @@
+{
+  "name": "projeto-integrador-5-semestre-back-end",
+  "version": "1.0.0",
+  "description": "[GRAN FACULDADE](https://faculdade.grancursosonline.com.br/)",
+  "homepage": "https://github.com/carlosoliveira-dev/projeto-integrador-5-semestre-back-end#readme",
+  "bugs": {
+    "url": "https://github.com/carlosoliveira-dev/projeto-integrador-5-semestre-back-end/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlosoliveira-dev/projeto-integrador-5-semestre-back-end.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "test": "jest --watchAll"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "sequelize": "^6.37.8",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
+}
