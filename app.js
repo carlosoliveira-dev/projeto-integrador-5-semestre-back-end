@@ -1,9 +1,16 @@
+const swaggerUi = require('swagger-ui-express');
+const yaml = require('js-yaml');
+const fs = require('fs');
 const { Sequelize, DataTypes } = require('sequelize');
 const express = require('express');
 
 // Inicializa o Express
 const app = express()
 app.use(express.json());
+
+// configura o Swagger
+const swaggerDocument = yaml.load(fs.readFileSync('swagger.yaml', 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Configura a conexão do Sequelize
 const sequelize = new Sequelize({
