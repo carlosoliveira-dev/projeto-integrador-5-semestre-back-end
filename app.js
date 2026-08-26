@@ -80,26 +80,56 @@ async function initDatabase() {
   }
 }
 
+// redireciona para o painel do Swagger
 app.get('/', async (req, res) => {
-  res.send('Projeto Integrador 5º semestre(Gran Faculdade)!');
+  res.redirect('/api-docs');
+});
+
+// rotas de usuários
+app.post('/signup', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+app.post('/login', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+app.get('/users', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+// rotas de perfil do usuário
+app.get('/profile', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+app.put('/profile', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+app.delete('/profile', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
 });
 
 // rotas de produtos
-app.get('/produto', async (req, res) => {
+app.get('/profile/products', async (req, res) => {
   const produtos = await Product.findAll();
-  res.send(produtos);
+  res.json(produtos);
 });
 
-app.get('/produto/:id', async (req, res) => {
-  const { id } = req.params;
-  res.send(`get produto by id: ${id}`);
-});
-
-app.get('/produto/:id/fornecedores', async (req, res) => {
-  res.send('lista de fornecedores desse produto');
-});
-
-app.post('/produto', async (req, res) => {
+app.post('/profile/products', async (req, res) => {
   try {
     const { nomeProduto, descricao } = req.body;
 
@@ -112,40 +142,93 @@ app.post('/produto', async (req, res) => {
       Descricao: descricao,
     });
 
-    // Retorna o status 201 (Created) e o produto recém-criado em JSON
     return res.status(201).json(novoProduto);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
 });
 
-app.delete('/produto/:id/fornecedor/:id', async (req, res) => {
-  const { productId, supplierId } = req.params;
-  res.send(`desvinculando produto: ${productId} do fornecedor: ${supplierId}`)
+app.put('/profile/products/:productId', async (req, res) => {
+  return res.status(400).json({
+    error: 'not implemented yet'
+  });
+});
+
+app.delete('/profile/products/:productId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.get('/profile/products/:productId', async (req, res) => {
+  const { productId } = req.params;
+  res.json(`get product by id: ${productId}`);
 });
 
 // rotas de fornecedores
-app.get('/fornecedor', async (req, res) => {
+app.get('/profile/suppliers', async (req, res) => {
   const fornecedores = await Product.findAll();
-  res.send(fornecedores);
+  res.json(fornecedores);
 });
 
-app.get('/fornecedor/:id', async (req, res) => {
-  const { id } = req.params;
-  res.send(`get fornecedor by id: ${id}`);
+app.post('/profile/suppliers', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
 });
 
-app.get('/fornecedor/:id/produtos', async (req, res) => {
-  res.send('lista de produtos que esse fornecedor tem');
+app.get('/profile/suppliers/:supplierId', async (req, res) => {
+  const { supplierId } = req.params;
+  res.json(`get fornecedor by id: ${supplierId}`);
 });
 
-// app.post('/fornecedor', async (req, res) => {
+app.put('/profile/suppliers/:supplierId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
 
-// });
+app.delete('/profile/suppliers/:supplierId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
 
-app.delete('/fornecedor/:id/produto/:id', async (req, res) => {
-  const { supplierId, productId } = req.params;
-  res.send(`desvinculando fornecedor: ${supplierId} do produto: ${productId}`)
+// rotas de associação entre produtos e fornecedores
+app.get('/profile/suppliers/:id/products', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.post('/profile/suppliers/:supplierId/products/:productId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.get('/profile/products/:productId/suppliers', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.post('/profile/products/:productId/suppliers/:supplierId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.delete('/profile/products/:productId/suppliers/:supplierId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
+});
+
+app.delete('/profile/suppliers/:supplierId/products/:productId', async (req, res) => {
+  return res.status(400).json({
+      error: 'not implemented yet'
+    });
 });
 
 module.exports = {

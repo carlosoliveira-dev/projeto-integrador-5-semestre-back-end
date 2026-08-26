@@ -1,28 +1,17 @@
 openapi: 3.0.0
 info:
-  title: Task Manager API (₢ Daniel Souza)
+  title: Projeto Integrador 5º Semestre API (₢ Carlos Oliveira)
   version: 1.0.0
-  description: Each user has a profile (password = 123456) and can create tasks, which can be updated and deleted. The API is secured with JWT. The API is built with Node.js, Express and a fake database.
+  description: Each user has a profile with the password 123456 and can create, update, and delete products and suppliers. Users can also link products to suppliers using a many-to-many relationship. The API is built with Node.js, Express, and a SQLite database, and is secured with JWT.
   author:
-    name: Daniel Souza
+    name: Carlos Oliveira
 components:
   securitySchemes:
-    bearerAuth: # Define the security scheme for Bearer token
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
 paths:
-  /:
-    get:
-      summary: Get a greeting message
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              example:
-                error: false
-                message: Hello World!
   /signup:
     post:
       summary: User signup
@@ -100,16 +89,16 @@ paths:
       responses:
         '200':
           description: Successful deletion
-  /profile/tasks:
+  /profile/products:
     get:
-      summary: Get all user's tasks
+      summary: Get all user's products
       security:
         - bearerAuth: []
       responses:
         '200':
           description: Successful response
     post:
-      summary: Create a new task for the user
+      summary: Create a new product for the user
       security:
         - bearerAuth: []
       requestBody:
@@ -125,10 +114,10 @@ paths:
                   type: string
       responses:
         '200':
-          description: Successful task creation
-  /profile/tasks/{taskId}:
+          description: Successful product creation
+  /profile/products/{productId}:
     get:
-      summary: Get a user's task by ID
+      summary: Get a user's product by ID
       security:
         - bearerAuth: []
       parameters:
@@ -141,7 +130,7 @@ paths:
         '200':
           description: Successful response
     put:
-      summary: Update a user's task by ID
+      summary: Update a user's product by ID
       security:
         - bearerAuth: []
       requestBody:
@@ -159,23 +148,194 @@ paths:
                   type: string
       parameters:
         - in: path
-          name: taskId
+          name: productId
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Successful task update
+          description: Successful product update
     delete:
-      summary: Delete a user's task by ID
+      summary: Delete a user's product by ID
       security:
         - bearerAuth: []
       parameters:
         - in: path
-          name: taskId
+          name: productId
           required: true
           schema:
             type: string
       responses:
         '200':
           description: Successful task deletion
+  /profile/suppliers:
+    get:
+      summary: Get all user's suppliers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Create a new supplier for the user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Successful supplier creation
+  /profile/suppliers/{supplierId}:
+    get:
+      summary: Get a user's supplier by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+    put:
+      summary: Update a user's supplier by ID
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful supplier update
+    delete:
+      summary: Delete a user's supplier by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful supplier deletion
+  /profile/suppliers/{supplierId}/products:
+    get:
+      summary: Get products by supplier ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /profile/products/{productId}/suppliers:
+    get:
+      summary: Get suppliers by product ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+  /profile/suppliers/{supplierId}/products/{productId}:
+    post:
+        summary: Link the product to the supplier
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+        responses:
+          '200':
+            description: Product successfully associated with supplier
+    delete:
+      summary: Unlink the product from the supplier
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful supplier deletion
+  /profile/products/{productId}/suppliers/{supplierId}:
+    post:
+        summary: Link the supplier to the product
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+        responses:
+          '200':
+            description: Supplier successfully associated with product
+    delete:
+          summary: Unlink the supplier from the product
+          security:
+            - bearerAuth: []
+          parameters:
+            - in: path
+              name: supplierId
+              required: true
+              schema:
+                type: string
+          responses:
+            '200':
+              description: Successful supplier deletion
