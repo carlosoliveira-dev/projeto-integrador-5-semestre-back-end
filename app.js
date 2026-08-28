@@ -208,9 +208,56 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "E-mail e senha são obrigatórios." });
+  }
+
+  try {
+    const user = await User.findOne({ where: { Email: email } });
+
+    if (!user) {
+      return res.status(401).json({ error: "E-mail ou senha inválidos." }); 
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "E-mail ou senha inválidos." });
+    }
+
+    const payload = {
+      id: user.id,
+      email: user.email
+    };
+
+    const secret = process.env.JWT_SECRET;
+
+    const options = {
+      expiresIn: '1h'
+    };
+
+    const token = jwt.sign(payload, secret, options);
+
+    res.status(200).json({
+      message: "Login realizado com sucesso!",
+      token: token,
+      user: {
+        user_id: user.id,
+        name: user.name,
+        email: user.email,
+        created_at: user.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro durante o processo de login:", error);
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar fazer login.",
+      details: error.message || error
+    });
+  }
 });
 
 app.get('/users', async (req, res) => {
