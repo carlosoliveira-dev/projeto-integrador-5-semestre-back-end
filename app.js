@@ -317,7 +317,6 @@ app.get('/profile', async (req, res) => {
 app.put('/profile', async (req, res) => {
   const { userId, bio, avatarUrl, birthDate, phone, location, website } = req.body;
 
-  console.log(userId);
   try {
     const user = await User.findByPk(userId,
       {include: [Profile]}
@@ -361,10 +360,19 @@ app.put('/profile', async (req, res) => {
   }
 });
 
-app.delete('/profile', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+app.delete('/profile/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const profile = await Profile.findOne({ where: { userId: userId } });
+
+    if (profile) {
+      await profile.destroy();
+      return res.status(200).json({ message: 'Perfil deletado com sucesso!' });
+    }
+  }
+  catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 // rotas de produtos
