@@ -1,5 +1,7 @@
+const { initDatabase, sequelize} = require('./database/connection');
+const { Product, Supplier, User, Profile } = require('./database/models');
 const request = require('supertest');
-const { app, initDatabase, sequelize, Product, Supplier, User, Profile} = require('./app');
+const { app } = require('./app');
 
 beforeAll(async () => {
   // Inicializa o banco de dados (conecta e sincroniza as tabelas)

@@ -1,10 +1,11 @@
 require('dotenv').config({ quiet: true });
+const { initDatabase, sequelize} = require('./database/connection');
+const { Product, Supplier, User, Profile } = require('./database/models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('js-yaml');
 const fs = require('fs');
-const { Sequelize, DataTypes } = require('sequelize');
 const express = require('express');
 
 // Inicializa o Express
@@ -14,129 +15,6 @@ app.use(express.json());
 // configura o Swagger
 const swaggerDocument = yaml.load(fs.readFileSync('swagger.yaml', 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Configura a conexão do Sequelize
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'db.sqlite',
-  define: {
-  freezeTableName: true
-  },
-  logging: false,
-});
-
-// Define os Modelos (Tabelas)
-const User = sequelize.define('User', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-});
-
-const Profile = sequelize.define('Profile', {
-  bio: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  avatarUrl: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
-  },
-  birthDate: {
-    type: DataTypes.DATEONLY,
-    allowNull: true
-  },
-  phone: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  location: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  website: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
-  }
-});
-
-const Product = sequelize.define('Product', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  barCode: DataTypes.STRING,
-  stockQuantity: DataTypes.STRING,
-  category: DataTypes.STRING,
-  expirationDate: DataTypes.DATEONLY,
-  image: DataTypes.STRING
-});
-
-const Supplier = sequelize.define('Supplier', {
-  companyName: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  cnpj: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  primaryContactName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  address: DataTypes.STRING,
-  phone: DataTypes.STRING,
-  email: DataTypes.STRING,
-});
-
-User.hasOne(Profile, {
-  foreignKey: 'userId',
-  onDelete: 'CASCADE'
-});
-
-Profile.belongsTo(User, {
-  foreignKey: 'userId'
-});
-
-Product.belongsToMany(Supplier, { 
-  through: 'ProductSupplier',
-  foreignKey: 'productId'
-});
-
-Supplier.belongsToMany(Product, { 
-  through: 'ProductSupplier',
-  foreignKey: 'supplierId'
-});
-
-// Função para inicializar o banco e sincronizar as tabelas
-async function initDatabase() {
-  try {
-    await sequelize.authenticate();
-    await sequelize.sync({ alter: true }); 
-  } catch (error) {
-    console.error('Erro ao conectar com o banco de dados:', error);
-    process.exit(1);
-  }
-}
 
 // redireciona para o painel do Swagger
 app.get('/', async (req, res) => {
@@ -213,7 +91,7 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ where: { Email: email } });
+    const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
       return res.status(401).json({ error: "E-mail ou senha inválidos." }); 
@@ -365,10 +243,12 @@ app.delete('/profile/:userId', async (req, res) => {
   try {
     const profile = await Profile.findOne({ where: { userId: userId } });
 
-    if (profile) {
-      await profile.destroy();
-      return res.status(200).json({ message: 'Perfil deletado com sucesso!' });
+    if (!profile) {
+      return res.status(404).json({ error: 'Perfil não encontrado.' });
     }
+
+    await profile.destroy();
+    return res.status(200).json({ message: 'Perfil deletado com sucesso!' });
   }
   catch (error) {
     return res.status(500).json({ error: error.message });
@@ -485,10 +365,4 @@ app.delete('/profile/suppliers/:supplierId/products/:productId', async (req, res
 
 module.exports = {
   app,
-  initDatabase,
-  sequelize,
-  get Product() { return Product; },
-  get Supplier() { return Supplier; },
-  get User() { return User; },
-  get Profile() { return Profile; },
 };
