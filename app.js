@@ -23,48 +23,105 @@ const sequelize = new Sequelize({
 });
 
 // Define os Modelos (Tabelas)
-const Product = sequelize.define('Produto', {
-  NomeProduto: {
+const User = sequelize.define('User', {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Descricao: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  CodigoBarras: DataTypes.STRING,
-  QuantidadeEstoque: DataTypes.STRING,
-  Categoria: DataTypes.STRING,
-  DataValidade: DataTypes.DATEONLY,
-  Imagem: DataTypes.STRING
-});
-
-const Supplier = sequelize.define('Fornecedor', {
-  NomeEmpresa: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  CNPJ: {
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+});
+
+const Profile = sequelize.define('Profile', {
+  bio: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  avatarUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      isUrl: true
+    }
+  },
+  birthDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  website: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      isUrl: true
+    }
+  }
+});
+
+const Product = sequelize.define('Product', {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  NomeContatoPrincipal: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Endereco: DataTypes.STRING,
-  Telefone: DataTypes.STRING,
-  Email: DataTypes.STRING,
+  barCode: DataTypes.STRING,
+  stockQuantity: DataTypes.STRING,
+  category: DataTypes.STRING,
+  expirationDate: DataTypes.DATEONLY,
+  image: DataTypes.STRING
+});
+
+const Supplier = sequelize.define('Supplier', {
+  companyName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  cnpj: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  primaryContactName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  address: DataTypes.STRING,
+  phone: DataTypes.STRING,
+  email: DataTypes.STRING,
+});
+
+User.hasOne(Profile, {
+  foreignKey: 'userId',
+  onDelete: 'CASCADE'
+});
+
+Profile.belongsTo(User, {
+  foreignKey: 'userId'
 });
 
 Product.belongsToMany(Supplier, { 
-  through: 'ProdutoFornecedor',
-  foreignKey: 'produtoId'
+  through: 'ProductSupplier',
+  foreignKey: 'productId'
 });
 
 Supplier.belongsToMany(Product, { 
-  through: 'ProdutoFornecedor',
-  foreignKey: 'fornecedorId'
+  through: 'ProductSupplier',
+  foreignKey: 'supplierId'
 });
 
 // Função para inicializar o banco e sincronizar as tabelas
@@ -87,9 +144,52 @@ app.get('/', async (req, res) => {
 
 // rotas de usuários
 app.post('/signup', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+   const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: "Todos os campos (name, email, password) são obrigatórios." });
+  }
+
+  try {
+    const userExists = await User.findOne({ where: { Email: email } });
+    
+    if (userExists) {
+      return res.status(409).json({ error: "Este e-mail já está cadastrado." }); // 409 = Conflito
+    }
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const newUser = await db.one(
+      'INSERT INTO users(name, email, password_hash) VALUES($1, $2, $3) RETURNING id, name, email, created_at',
+      [name, email, passwordHash]
+    );
+
+    const token = jwt.sign(
+      { user_id: newUser.id }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '1d' }
+    );
+
+    res.status(201).json({
+      message: "Usuário criado com sucesso!",
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        created_at: newUser.created_at
+      },
+      token: token
+    });
+
+  } catch (error) {
+    console.error("Erro no processo de cadastro de usuário:", error);
+    
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar criar a conta.",
+      details: error.message || error
+    });
+  }
 });
 
 app.post('/login', async (req, res) => {
@@ -131,15 +231,15 @@ app.get('/profile/products', async (req, res) => {
 
 app.post('/profile/products', async (req, res) => {
   try {
-    const { nomeProduto, descricao } = req.body;
+    const { name, description } = req.body;
 
-    if (!nomeProduto || descricao === undefined) {
+    if (!name || description === undefined) {
       return res.status(400).json({ error: 'Nome e Descrição são obrigatórios.' });
     }
 
     const novoProduto = await Product.create({
-      NomeProduto: nomeProduto,
-      Descricao: descricao,
+      name: name,
+      description: description,
     });
 
     return res.status(201).json(novoProduto);
