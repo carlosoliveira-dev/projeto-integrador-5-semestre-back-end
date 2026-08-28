@@ -1,5 +1,5 @@
 const { initDatabase, sequelize} = require('./database/connection');
-const { Product, Supplier, User, Profile } = require('./database/models');
+const { Product, Supplier, User, Profile } = require('./database/models/models');
 const request = require('supertest');
 const { app } = require('./app');
 

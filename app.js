@@ -1,6 +1,6 @@
 require('dotenv').config({ quiet: true });
 const { initDatabase, sequelize} = require('./database/connection');
-const { Product, Supplier, User, Profile } = require('./database/models');
+const { Product, Supplier, User, Profile } = require('./database/models/models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
