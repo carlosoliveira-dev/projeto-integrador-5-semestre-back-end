@@ -315,9 +315,50 @@ app.get('/profile', async (req, res) => {
 });
 
 app.put('/profile', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+  const { userId, bio, avatarUrl, birthDate, phone, location, website } = req.body;
+
+  console.log(userId);
+  try {
+    const user = await User.findByPk(userId,
+      {include: [Profile]}
+    );
+
+    if (!user) {
+      return res.status(409).json({ error: "Usuário não cadastrado." });
+    }
+
+    const updatedProfile = await user.Profile.update({
+      bio: bio,
+      avatarUrl: avatarUrl,
+      birthDate: birthDate,
+      phone: phone,
+      location: location,
+      website: website
+    });
+
+    res.status(201).json({
+      message: "Perfil do usuário atualizado com sucesso!",
+      profile: {
+        id: updatedProfile.id,
+        userId: updatedProfile.userId,
+        bio: updatedProfile.bio,
+        avatarUrl: updatedProfile.avatarUrl,
+        birthDate: updatedProfile.birthDate,
+        phone: updatedProfile.phone,
+        location: updatedProfile.location,
+        website: updatedProfile.website,
+        created_at: updatedProfile.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro no processo de atualização do perfil de usuário:", error);
+    
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar atualizar o perfil de usuário.",
+      details: error.message || error
+    });
+  }
 });
 
 app.delete('/profile', async (req, res) => {
