@@ -261,9 +261,8 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/users', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+  const users = await User.findAll();
+  res.json(users);
 });
 
 // rotas de perfil do usuário
