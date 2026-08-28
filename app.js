@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
@@ -131,9 +131,7 @@ Supplier.belongsToMany(Product, {
 async function initDatabase() {
   try {
     await sequelize.authenticate();
-    // { alter: true } atualiza as tabelas se você mudar algo no código
     await sequelize.sync({ alter: true }); 
-    console.log('Banco de dados conectado e tabelas sincronizadas!');
   } catch (error) {
     console.error('Erro ao conectar com o banco de dados:', error);
     process.exit(1);
@@ -154,7 +152,7 @@ app.post('/signup', async (req, res) => {
   }
 
   try {
-    const userExists = await User.findOne({ where: { Email: email } });
+    const userExists = await User.findOne({ where: { email: email } });
     
     if (userExists) {
       return res.status(409).json({ error: "Este e-mail já está cadastrado." }); // 409 = Conflito
@@ -266,10 +264,54 @@ app.get('/users', async (req, res) => {
 });
 
 // rotas de perfil do usuário
+app.post('/profile', async (req, res) => {
+  const { userId, bio, avatarUrl, birthDate, phone, location, website } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(409).json({ error: "Usuário não cadastrado." });
+    }
+
+    const newProfile = await user.createProfile({
+      bio: bio,
+      avatarUrl: avatarUrl,
+      birthDate: birthDate,
+      phone: phone,
+      location: location,
+      website: website
+    });
+
+    res.status(201).json({
+      message: "Perfil do usuário criado com sucesso!",
+      profile: {
+        id: newProfile.id,
+        userId: newProfile.userId,
+        email: newProfile.email,
+        bio: newProfile.bio,
+        avatarUrl: newProfile.avatarUrl,
+        birthDate: newProfile.birthDate,
+        phone: newProfile.phone,
+        location: newProfile.location,
+        website: newProfile.website,
+        created_at: newProfile.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro no processo de cadastro de usuário:", error);
+    
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar criar a conta.",
+      details: error.message || error
+    });
+  }
+});
+
 app.get('/profile', async (req, res) => {
-  return res.status(400).json({
-    error: 'not implemented yet'
-  });
+  const profiles = await Profile.findAll();
+  res.json(profiles);
 });
 
 app.put('/profile', async (req, res) => {
