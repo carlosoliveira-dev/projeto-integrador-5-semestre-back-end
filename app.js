@@ -1,3 +1,6 @@
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('js-yaml');
 const fs = require('fs');
@@ -160,16 +163,28 @@ app.post('/signup', async (req, res) => {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await db.one(
-      'INSERT INTO users(name, email, password_hash) VALUES($1, $2, $3) RETURNING id, name, email, created_at',
-      [name, email, passwordHash]
-    );
+    const newUser = await User.create({
+      name: name,
+      email: email,
+      password: passwordHash,
+    });
 
-    const token = jwt.sign(
-      { user_id: newUser.id }, 
-      process.env.JWT_SECRET, 
-      { expiresIn: '1d' }
-    );
+    // Dados que você quer guardar dentro do token (Payload)
+    const payload = {
+      id: newUser.id,
+      email: newUser.email
+    };
+
+    // Chave secreta guardada nas variáveis de ambiente (nunca hardcoded!)
+    const secret = process.env.JWT_SECRET;
+
+    // Opções do token (como o tempo de expiração)
+    const options = {
+      expiresIn: '1h' // Expira em 1 hora (ex: '7d', '15m', '2h')
+    };
+
+    // Gerando o token
+    const token = jwt.sign(payload, secret, options);
 
     res.status(201).json({
       message: "Usuário criado com sucesso!",
@@ -336,5 +351,7 @@ module.exports = {
   initDatabase,
   sequelize,
   get Product() { return Product; },
-  get Supplier() { return Supplier; }
+  get Supplier() { return Supplier; },
+  get User() { return User; },
+  get Profile() { return Profile; },
 };

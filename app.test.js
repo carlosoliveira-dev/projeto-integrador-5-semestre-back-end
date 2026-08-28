@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app, initDatabase, sequelize, Product, Supplier } = require('./app');
+const { app, initDatabase, sequelize, Product, Supplier, User, Profile} = require('./app');
 
 beforeAll(async () => {
   // Inicializa o banco de dados (conecta e sincroniza as tabelas)
@@ -10,6 +10,8 @@ beforeAll(async () => {
 beforeEach(async () => {
   await Product.destroy({ truncate: true, cascade: true });
   await Supplier.destroy({ truncate: true, cascade: true });
+  await User.destroy({ truncate: true, cascade: true });
+  await Profile.destroy({ truncate: true, cascade: true });
 });
 
 // Roda após todos os testes terminarem para fechar a conexão com o banco
@@ -18,18 +20,20 @@ afterAll(async () => {
 });
 
 describe('POST /signup', () => {
-  // it('deve cadastrar um novo usuário e devolver token jwt', async () => {
-  //   const res = await request(app)
-  //     .post('/signup')
-  //     .send({
-  //       name: 'Carlos',
-  //       email: 'carlos@gmail.com',
-  //       password: '123456'
-  //     });
+  it('deve cadastrar um novo usuário e devolver token jwt', async () => {
+    const res = await request(app)
+      .post('/signup')
+      .send({
+        name: 'Carlos',
+        email: 'carlos@gmail.com',
+        password: '123456'
+      });
     
-  //   expect(res.status).toBe(201);
-  //   // expect(res.body).toHaveProperty('id');
-  // });
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('message');
+    expect(res.body).toHaveProperty('user');
+    expect(res.body).toHaveProperty('token');
+  });
 });
 
 describe('GET /profile/products', () => {
