@@ -21,10 +21,10 @@ afterAll(async () => {
   await sequelize.close();
 });
 
-describe('POST /signup', () => {
+describe('POST /users/signup', () => {
   it('deve cadastrar novo usuário e devolver token jwt', async () => {
     const res = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Carlos',
         email: 'carlos@gmail.com',
@@ -40,10 +40,10 @@ describe('POST /signup', () => {
     });
 });
 
-describe('POST /login', () => {
+describe('POST users/login', () => {
   it('deve permitir o acesso com a senha correta', async () => {
     const resSignup = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Carlos',
         email: 'carlos@gmail.com',
@@ -51,7 +51,7 @@ describe('POST /login', () => {
       });
 
     const res = await request(app)
-      .post('/login')
+      .post('/users/login')
       .send({
         email: 'carlos@gmail.com',
         password: '123456'
@@ -63,7 +63,7 @@ describe('POST /login', () => {
 
   it('deve negar o acesso com a senha errada', async () => {
     const resSignup = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Carlos',
         email: 'carlos@gmail.com',
@@ -71,7 +71,7 @@ describe('POST /login', () => {
       });
 
     const res = await request(app)
-      .post('/login')
+      .post('/users/login')
       .send({
         email: 'carlos@gmail.com',
         password: '123'
@@ -93,7 +93,7 @@ describe('GET /users', () => {
 
   it('deve retornar uma lista com 3 usuários', async () => {
     const user1 = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Carlos',
         email: 'carlos@gmail.com',
@@ -101,7 +101,7 @@ describe('GET /users', () => {
       });
 
     const user2 = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Maria',
         email: 'maria@gmail.com',
@@ -109,7 +109,7 @@ describe('GET /users', () => {
       });
 
     const user3 = await request(app)
-      .post('/signup')
+      .post('/users/signup')
       .send({
         name: 'Joana',
         email: 'Joana@gmail.com',
@@ -137,7 +137,7 @@ describe('GET /users', () => {
 describe('POST /profile', () => {
   it('deve cadastrar um perfil de usuário', async () => {
     const resSignup = await request(app)
-    .post('/signup')
+    .post('/users/signup')
     .send({
       name: 'Carlos',
       email: 'carlos@gmail.com',
@@ -176,10 +176,10 @@ describe('GET /profile', () => {
   });
 });
 
-describe('GET /profile/products', () => {
+describe('GET /products', () => {
   it('deve retornar uma lista vazia de produtos', async () => {
     const res = await request(app)
-      .get('/profile/products')
+      .get('/products')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200);
     expect(res.body).toEqual([]);
@@ -187,28 +187,28 @@ describe('GET /profile/products', () => {
 
   it('deve retornar uma lista com 3 produtos', async () => {
     const p1 = await request(app)
-    .post('/profile/products')
+    .post('/products')
     .send({
       name: 'smartphone',
       description: 'baixa performance'
     });
 
     const p2 = await request(app)
-    .post('/profile/products')
+    .post('/products')
     .send({
       name: 'Notebook',
       description: 'media performance'
     });
 
     const p3 = await request(app)
-    .post('/profile/products')
+    .post('/products')
     .send({
       name: 'Computador',
       description: 'alta performance'
     });
 
     const res = await request(app)
-      .get('/profile/products')
+      .get('/products')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200);
 
@@ -300,10 +300,10 @@ describe('DELETE /profile', () => {
   });
 });
 
-describe('POST /profile/products', () => {
+describe('POST /products', () => {
   it('deve cadastrar um novo produto', async () => {
     const res = await request(app)
-      .post('/profile/products')
+      .post('/products')
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -323,10 +323,10 @@ describe('POST /profile/products', () => {
 });
 
 
-describe('GET /profile/suppliers', () => {
+describe('GET /suppliers', () => {
   it('deve retornar uma lista vazia de fornecedores', async () => {
     const res = await request(app)
-    .get('/profile/suppliers')
+    .get('/suppliers')
     .expect('Content-Type', 'application/json; charset=utf-8')
     .expect(200);
     expect(res.body).toEqual([]);
