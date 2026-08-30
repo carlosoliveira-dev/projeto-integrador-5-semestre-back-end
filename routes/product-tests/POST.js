@@ -1,0 +1,27 @@
+function POSTProducts(app, request, Product) {
+ describe('POST /products', () => {
+  it('deve cadastrar um novo produto', async () => {
+    const res = await request(app)
+      .post('/products')
+      .send({
+        name: 'Notebook',
+        description: 'baixa performance'
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty('id');
+    expect(res.body.name).toBe('Notebook');
+    expect(res.body.description).toBe('baixa performance');
+
+    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
+    const produtoNoBanco = await Product.findByPk(1);
+    expect(produtoNoBanco).not.toBeNull();
+    expect(produtoNoBanco.name).toBe('Notebook');
+    expect(produtoNoBanco.description).toBe('baixa performance');
+  });
+});
+}
+
+module.exports = {
+    POSTProducts,
+}
