@@ -15,8 +15,7 @@ function DELETEProfile(app, request, Profile, User) {
         location: 'city',
         website: 'website.com'
     });
-
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
+ 
     const user = await User.findOne({
       include: [Profile]
     });

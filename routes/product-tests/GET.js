@@ -38,7 +38,6 @@ function GETProducts(app, request, Product) {
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body).toHaveLength(3);
 
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
     const produtos = await Product.findAll();
     expect(Array.isArray(produtos)).toBe(true);
     expect(produtos).toHaveLength(3);

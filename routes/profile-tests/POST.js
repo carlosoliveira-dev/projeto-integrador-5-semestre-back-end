@@ -23,7 +23,6 @@ function POSTProfile(app, request, Profile) {
         website: 'website.com'
       });
 
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
     const profiles = await Profile.findAll();
     expect(profiles[0].dataValues.id).toBe(1);
     expect(profiles[0].dataValues.userId).toBe(1);

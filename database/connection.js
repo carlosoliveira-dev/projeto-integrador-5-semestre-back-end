@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 
-// Configura a conexão do Sequelize
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: 'db.sqlite',
@@ -10,7 +9,6 @@ const sequelize = new Sequelize({
   logging: false,
 });
 
-// Função para inicializar o banco e sincronizar as tabelas
 async function initDatabase() {
   try {
     await sequelize.authenticate();

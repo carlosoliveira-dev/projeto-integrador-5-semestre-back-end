@@ -41,7 +41,6 @@ function GETuser(app, request, User) {
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body).toHaveLength(3);
 
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
     const users = await User.findAll();
     expect(users[0].dataValues.id).toBe(1);
     expect(users[1].dataValues.id).toBe(2);

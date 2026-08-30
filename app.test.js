@@ -8,11 +8,9 @@ const { productTests } = require('./routes/product.test-suite');
 const { supplierTests } = require('./routes/supplier.test-suite');
 
 beforeAll(async () => {
-  // Inicializa o banco de dados (conecta e sincroniza as tabelas)
   await initDatabase();
 });
 
-// Limpa a tabela de produtos antes de cada teste para isolar os cenários
 beforeEach(async () => {
   await Product.destroy({ truncate: true, cascade: true });
   await Supplier.destroy({ truncate: true, cascade: true });
@@ -20,7 +18,6 @@ beforeEach(async () => {
   await Profile.destroy({ truncate: true, cascade: true });
 });
 
-// Roda após todos os testes terminarem para fechar a conexão com o banco
 afterAll(async () => {
   await sequelize.close();
 });

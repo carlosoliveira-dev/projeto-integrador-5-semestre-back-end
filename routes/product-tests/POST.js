@@ -13,7 +13,6 @@ function POSTProducts(app, request, Product) {
     expect(res.body.name).toBe('Notebook');
     expect(res.body.description).toBe('baixa performance');
 
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
     const produtoNoBanco = await Product.findByPk(1);
     expect(produtoNoBanco).not.toBeNull();
     expect(produtoNoBanco.name).toBe('Notebook');

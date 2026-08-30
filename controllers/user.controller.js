@@ -22,7 +22,7 @@ const signupUser = async (req, res) => {
     const userExists = await User.findOne({ where: { email: email } });
     
     if (userExists) {
-      return res.status(409).json({ error: "Este e-mail já está cadastrado." }); // 409 = Conflito
+      return res.status(409).json({ error: "Este e-mail já está cadastrado." });
     }
 
     const saltRounds = 10;
@@ -34,21 +34,17 @@ const signupUser = async (req, res) => {
       password: passwordHash,
     });
 
-    // Dados que você quer guardar dentro do token (Payload)
     const payload = {
       id: newUser.id,
       email: newUser.email
     };
 
-    // Chave secreta guardada nas variáveis de ambiente (nunca hardcoded!)
     const secret = process.env.JWT_SECRET;
 
-    // Opções do token (como o tempo de expiração)
     const options = {
       expiresIn: '1h' // Expira em 1 hora (ex: '7d', '15m', '2h')
     };
 
-    // Gerando o token
     const token = jwt.sign(payload, secret, options);
 
     res.status(201).json({

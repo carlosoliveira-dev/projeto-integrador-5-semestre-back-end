@@ -28,7 +28,6 @@ function PUTProfile(app, request, Profile, User) {
         website: 'mywebsite.com.br'
     });
 
-    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
     const user = await User.findOne({
       include: [Profile]
     });
