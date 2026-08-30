@@ -1,4 +1,4 @@
-function profileTests(app, request, Profile) {
+function profileTests(app, request, Profile, User) {
  describe('POST /profile', () => {
   it('deve cadastrar um perfil de usuário', async () => {
     const resSignup = await request(app)
@@ -40,6 +40,84 @@ function profileTests(app, request, Profile) {
       expect(res.body).toEqual([]);
   });
 });
+
+describe('PUT /profile', () => {
+  it('deve atualizar o perfil do usuário', async () => {
+    const newUser = await User.create({
+      name: 'Carlos',
+      email: 'carlos@gmail.com',
+      password: '123'
+    });
+
+    const newProfile = await newUser.createProfile({
+        bio: 'something to say',
+        avatarUrl: 'http://www.avatarUrl.com',
+        birthDate: '2005-01-01',
+        phone: '0099999999',
+        location: 'city',
+        website: 'website.com'
+    });
+    
+    const res = await request(app)
+      .put('/profile')
+      .send({
+        userId: newUser.id,
+        bio: 'bio',
+        avatarUrl: 'http://www.avatar.com.br',
+        birthDate: '2010-05-15',
+        phone: '1188887777',
+        location: 'new city',
+        website: 'mywebsite.com.br'
+    });
+
+    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
+    const user = await User.findOne({
+      include: [Profile]
+    });
+
+    expect(user.Profile.id).toBe(1);
+    expect(user.Profile.userId).toBe(1);
+    expect(user.Profile.bio).toBe('bio');
+    expect(user.Profile.avatarUrl).toBe('http://www.avatar.com.br');
+    expect(user.Profile.birthDate).toBe('2010-05-15');
+    expect(user.Profile.phone).toBe('1188887777');
+    expect(user.Profile.location).toBe('new city');
+    expect(user.Profile.website).toBe('mywebsite.com.br');
+  });
+});
+
+ describe('DELETE /profile', () => {
+  it('deve apagar o perfil do usuário', async () => {
+    const newUser = await User.create({
+      name: 'Carlos',
+      email: 'carlos@gmail.com',
+      password: '123'
+    });
+
+    const newProfile = await newUser.createProfile({
+        bio: 'something to say',
+        avatarUrl: 'http://www.avatarUrl.com',
+        birthDate: '2005-01-01',
+        phone: '0099999999',
+        location: 'city',
+        website: 'website.com'
+    });
+
+    // Acessando diretamente o banco de dados para validar se foi salvo de verdade
+    const user = await User.findOne({
+      include: [Profile]
+    });
+
+    expect(user.Profile.bio).toBe('something to say');
+
+    const res = await request(app)
+      .delete(`/profile/${user.id}`);
+    
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Perfil deletado com sucesso!');
+  });
+});
+
 }
 
 module.exports = {
