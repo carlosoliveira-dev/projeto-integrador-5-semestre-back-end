@@ -1,7 +1,7 @@
-const { POSTProfile } = require('./profile-tests/POST');
-const { GETProfile } = require('./profile-tests/GET');
-const { PUTProfile } = require('./profile-tests/PUT');
-const { DELETEProfile } = require('./profile-tests/DELETE');
+const { POSTProfile } = require('./POST');
+const { GETProfile } = require('./GET');
+const { PUTProfile } = require('./PUT');
+const { DELETEProfile } = require('./DELETE');
 
 function profileTests(app, request, Profile, User) {
   POSTProfile(app, request, Profile);

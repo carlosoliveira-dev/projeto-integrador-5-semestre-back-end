@@ -1,5 +1,5 @@
-const { POSTuser } = require('./user-tests/POST');
-const { GETuser } = require('./user-tests/GET');
+const { POSTuser } = require('./POST');
+const { GETuser } = require('./GET');
 
 function userTests(app, request, User) {
   POSTuser(app, request);

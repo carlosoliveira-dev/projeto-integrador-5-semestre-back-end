@@ -1,5 +1,5 @@
-const { GETProducts } = require('./product-tests/GET');
-const { POSTProducts } = require('./product-tests/POST');
+const { GETProducts } = require('./GET');
+const { POSTProducts } = require('./POST');
 
 function productTests(app, request, Product) {
   GETProducts(app, request, Product);

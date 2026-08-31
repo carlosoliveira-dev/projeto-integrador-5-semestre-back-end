@@ -2,10 +2,10 @@ const { initDatabase, sequelize} = require('./database/connection');
 const { Product, Supplier, User, Profile } = require('./database/models/models');
 const request = require('supertest');
 const { app } = require('./app');
-const { profileTests } = require('./routes/profile.test-suite');
-const { userTests } = require('./routes/user.test-suite');
-const { productTests } = require('./routes/product.test-suite');
-const { supplierTests } = require('./routes/supplier.test-suite');
+const { profileTests } = require('./routes/profile-tests/profile.test-suite');
+const { userTests } = require('./routes/user-tests/user.test-suite');
+const { productTests } = require('./routes/product-tests/product.test-suite');
+const { supplierTests } = require('./routes/supplier-tests/supplier.test-suite');
 
 beforeAll(async () => {
   await initDatabase();
