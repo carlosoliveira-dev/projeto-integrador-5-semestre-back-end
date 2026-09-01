@@ -1,4 +1,5 @@
 const { Product } = require("../database/models/product");
+const { User } = require('../database/models/models');
 
 const getProducts = async (req, res) => {
     try {
@@ -21,19 +22,23 @@ const getProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    const { userId } = req.params;
     const { name, description } = req.body;
 
-    if (!name || description === undefined) {
-      return res.status(400).json({ error: 'Nome e Descrição são obrigatórios.' });
+    if (!name || !description || !userId === undefined) {
+      return res.status(400).json({ error: 'Nome, Descrição e UserId são obrigatórios.' });
     }
 
-    const novoProduto = await Product.create({
+    const user = await User.findByPk(userId);
+
+    const novoProduto = await user.createProduct({
       name: name,
       description: description,
     });
 
     return res.status(201).json(novoProduto);
   } catch (error) {
+      console.log(error.message);
     return res.status(400).json({ error: error.message });
   }
 };

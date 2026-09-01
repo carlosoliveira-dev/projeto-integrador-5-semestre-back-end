@@ -12,7 +12,7 @@ const {
 } = require('../controllers/product.controller')
 
 router.get('/', getProducts);
-router.post('/', addProduct);
+router.post('/:userId', addProduct);
 router.put('/:productId', updateProduct);
 router.delete('/:productId', deleteProduct);
 router.get('/:productId', getProduct);
