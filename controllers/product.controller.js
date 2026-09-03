@@ -44,9 +44,58 @@ const addProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
+ const { productId } = req.params;
+ const { userId, name, description, barCode, stockQuantity, category, expirationDate, image } = req.body;
+
+  try {
+    const user = await User.findByPk(userId,
+      {include: [Product]}
+    );
+
+    if (!user) {
+      return res.status(409).json({ error: "Usuário não cadastrado." });
+    }
+    
+    const product = await Product.findByPk(productId);
+
+    if (!product) {
+      return res.status(409).json({ error: "Produto não cadastrado." });
+    }
+
+    const updatedProduct = await product.update({
+      name: name,
+      description: description,
+      barCode: barCode,
+      stockQuantity: stockQuantity,
+      category: category,
+      expirationDate: expirationDate,
+      image: image
     });
+
+    res.status(201).json({
+      message: "Produto atualizado com sucesso!",
+      product: {
+        id: updatedProduct.id,
+        userId: updatedProduct.userId,
+        name: name,
+        description: description,
+        barCode: barCode,
+        stockQuantity: stockQuantity,
+        category: category,
+        expirationDate: expirationDate,
+        image: image,
+        created_at: updatedProduct.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro no processo de atualização do produto:", error);
+    
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar atualizar o produto.",
+      details: error.message || error
+    });
+  }
 };
 
 const deleteProduct = async (req, res) => {
