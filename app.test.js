@@ -24,5 +24,5 @@ afterAll(async () => {
 
 profileTests(app, request, Profile, User);
 userTests(app, request, User);
-productTests(app, request, Product);
+productTests(app, request, Product, User);
 supplierTests(app, request);
