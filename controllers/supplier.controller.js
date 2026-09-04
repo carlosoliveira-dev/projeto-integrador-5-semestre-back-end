@@ -1,4 +1,4 @@
-const { Supplier } = require('../database/models/models');
+const { Supplier, User } = require('../database/models/models');
 
 const getSuppliers = async (req, res) => {
     try {
@@ -20,9 +20,30 @@ const getSupplier = async (req, res) => {
 };
 
 const addSupplier = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
+ try {
+    const { userId } = req.params;
+    const { companyName, cnpj, primaryContactName, address, phone, email } = req.body;
+
+    if (!companyName || !cnpj || !primaryContactName === undefined) {
+      return res.status(400).json({ error: 'companyName, cnpj e primaryContactName são obrigatórios.' });
+    }
+
+    const user = await User.findByPk(userId);
+
+    const newSupplier = await user.createSupplier({
+        companyName: companyName,
+        cnpj: cnpj,
+        primaryContactName: primaryContactName,
+        address: address,
+        phone: phone,
+        email: email
     });
+
+    return res.status(201).json(newSupplier);
+  } catch (error) {
+      console.log(error.message);
+    return res.status(400).json({ error: error.message });
+  }
 };
 
 const updateSupplier = async (req, res) => {

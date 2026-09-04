@@ -12,10 +12,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await Product.destroy({ truncate: true, cascade: true });
-  await Supplier.destroy({ truncate: true, cascade: true });
-  await User.destroy({ truncate: true, cascade: true });
-  await Profile.destroy({ truncate: true, cascade: true });
+  await sequelize.sync({ force: true });
 });
 
 afterAll(async () => {
