@@ -8,7 +8,7 @@ function productTests(app, request, Product, User) {
   GETProducts(app, request, Product);
   POSTProducts(app, request, Product, sequelize);
   PUTProduct(app, request, Product);
-  DELETEProduct(app, request, Product, User);
+  DELETEProduct(app, request, Product, User, sequelize);
 }
 
 module.exports = {
