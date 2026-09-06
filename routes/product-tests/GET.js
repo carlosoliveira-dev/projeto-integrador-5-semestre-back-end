@@ -78,6 +78,57 @@ function GETProducts(app, request, Product) {
 
   });
 
+   it('deve retornar o fornecedor que está associado com o produto', async () => {
+    const resUser = await request(app)
+      .post('/users/signup')
+      .send({
+        name: 'Carlos',
+        email: 'carlos@gmail.com',
+        password: '123'
+      });
+
+    const user = resUser.body.user;
+
+    const resProduct = await request(app)
+      .post(`/products/${user.id}`)
+      .send({
+        name: 'Notebook',
+        description: 'baixa performance'
+      });
+
+    const product = resProduct.body;
+    
+    const resSupplier = await request(app)
+    .post(`/suppliers/${user.id}`)
+    .send({
+      companyName: 'Ifoody LTDA',
+      cnpj: '22.111.222-05',
+      primaryContactName: 'iFoody',
+      address: 'street 123',
+      phone: '0555468547',
+      email: 'ifood@dy.com.br'
+    });
+
+    const supplier = resSupplier.body;
+
+    const resLink = await request(app)
+      .post(`/products/${product.id}/suppliers/${supplier.id}`)
+      .expect(201);
+    
+    const resGetSuppliers = await request(app)
+      .get(`/products/${product.id}/suppliers/`)
+      .send({
+        userId: user.id
+      })
+      .expect(200);
+    
+    console.log(resGetSuppliers.body);
+
+    expect(resGetSuppliers.body[0]).toHaveProperty('productId');
+    expect(resGetSuppliers.body[0]).toHaveProperty('supplierId');
+    expect(resGetSuppliers.body[0].productId).toBe(1)
+    expect(resGetSuppliers.body[0].supplierId).toBe(1)
+  });
  });
 }
 
