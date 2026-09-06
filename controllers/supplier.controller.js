@@ -92,9 +92,20 @@ const updateSupplier = async (req, res) => {
 };
 
 const deleteSupplier = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
-    });
+ const { supplierId } = req.params;
+  try {
+    const supplier = await Supplier.findByPk(supplierId);
+
+    if (!supplier) {
+      return res.status(404).json({ error: 'Fornecedor não encontrado.' });
+    }
+
+    await supplier.destroy();
+    return res.status(200).json({ message: 'Fornecedor excluído com sucesso!' });
+  }
+  catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 }
 
 const getProductsBySupplierId = async (req, res) => {
