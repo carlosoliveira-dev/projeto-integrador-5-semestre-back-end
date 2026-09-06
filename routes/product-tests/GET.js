@@ -121,8 +121,6 @@ function GETProducts(app, request, Product) {
         userId: user.id
       })
       .expect(200);
-    
-    console.log(resGetSuppliers.body);
 
     expect(resGetSuppliers.body[0]).toHaveProperty('productId');
     expect(resGetSuppliers.body[0]).toHaveProperty('supplierId');

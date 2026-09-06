@@ -47,9 +47,48 @@ const addSupplier = async (req, res) => {
 };
 
 const updateSupplier = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
+ const { supplierId } = req.params;
+ const { companyName, cnpj, primaryContactName, address, phone, email } = req.body;
+
+  try {
+    const supplier = await Supplier.findByPk(supplierId);
+
+    if (!supplier) {
+      return res.status(409).json({ error: "Fornecedor não cadastrado." });
+    }
+
+    const updatedSupplier = await supplier.update({
+        companyName: companyName,
+        cnpj: cnpj,
+        primaryContactName: primaryContactName,
+        address: address,
+        phone: phone,
+        email: email,
     });
+
+    res.status(200).json({
+      message: "Fornecedor atualizado com sucesso!",
+      supplier: {
+        id: updatedSupplier.id,
+        userId: updatedSupplier.userId,
+        companyName: updatedSupplier.companyName,
+        cnpj: updatedSupplier.cnpj,
+        primaryContactName: updatedSupplier.primaryContactName,
+        address: updatedSupplier.address,
+        phone: updatedSupplier.phone,
+        email: updatedSupplier.email,
+        created_at: updatedSupplier.created_at
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro no processo de atualização do fornecedor:", error);
+    
+    res.status(500).json({
+      error: "Erro interno no servidor ao tentar atualizar o fornecedor.",
+      details: error.message || error
+    });
+  }
 };
 
 const deleteSupplier = async (req, res) => {
