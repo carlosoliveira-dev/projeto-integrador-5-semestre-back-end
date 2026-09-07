@@ -11,10 +11,17 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+tags:
+  - name: Users
+    description: Gerenciamento de login e autenticação dos usuários
+  - name: Profiles
+    description: Gerenciamento de perfis de usuários
 paths:
-  /signup:
+  /users/signup:
     post:
       summary: User signup
+      tags:
+        - Users 
       requestBody:
         required: true
         content:
@@ -31,9 +38,11 @@ paths:
       responses:
         '200':
           description: Successful signup
-  /login:
+  /users/login:
     post:
       summary: User login
+      tags:
+        - Users
       requestBody:
         required: true
         content:
@@ -50,20 +59,56 @@ paths:
           description: Successful login
   /users:
     get:
-      summary: Get all users' profiles
+      summary: Get all users
+      tags:
+        - Users
       responses:
         '200':
           description: Successful response
   /profile:
     get:
       summary: Get user's profile
+      tags:
+      - Profiles
       security:
         - bearerAuth: []
       responses:
         '200':
           description: Successful response
+    post:
+        summary: Create a new profile for the user
+        tags:
+          - Profiles
+        security:
+          - bearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  bio:
+                    type: string
+                  avatarUrl:
+                    type: string
+                  birthDate:
+                    type: string
+                  phone:
+                    type: string
+                  location:
+                    type: string
+                  website:
+                    type: string
+        responses:
+            '200':
+              description: Successful response
     put:
       summary: Update user's profile
+      tags:
+        - Profiles
       requestBody:
         required: true
         content:
@@ -71,25 +116,43 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
+                 userId:
+                    type: string
+                 bio:
+                    type: string
+                 avatarUrl:
+                    type: string
+                 birthDate:
+                    type: string
+                 phone:
+                    type: string
+                 location:
+                    type: string
+                 website:
+                    type: string
       security:
         - bearerAuth: []
       responses:
         '200':
           description: Successful update
+  /profile/{userId}:
     delete:
       summary: Delete user's profile
+      tags:
+        - Profiles
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: User ID
       responses:
         '200':
           description: Successful deletion
-  /profile/products:
+  /products:
     get:
       summary: Get all user's products
       security:
@@ -115,7 +178,7 @@ paths:
       responses:
         '200':
           description: Successful product creation
-  /profile/products/{productId}:
+  /products/{productId}:
     get:
       summary: Get a user's product by ID
       security:
@@ -168,7 +231,7 @@ paths:
       responses:
         '200':
           description: Successful task deletion
-  /profile/suppliers:
+  /suppliers:
     get:
       summary: Get all user's suppliers
       security:
@@ -194,7 +257,7 @@ paths:
       responses:
         '200':
           description: Successful supplier creation
-  /profile/suppliers/{supplierId}:
+  /suppliers/{supplierId}:
     get:
       summary: Get a user's supplier by ID
       security:
@@ -247,7 +310,7 @@ paths:
       responses:
         '200':
           description: Successful supplier deletion
-  /profile/suppliers/{supplierId}/products:
+  /suppliers/{supplierId}/products:
     get:
       summary: Get products by supplier ID
       security:
@@ -261,7 +324,7 @@ paths:
       responses:
         '200':
           description: Successful response
-  /profile/products/{productId}/suppliers:
+  /products/{productId}/suppliers:
     get:
       summary: Get suppliers by product ID
       security:
@@ -275,7 +338,7 @@ paths:
       responses:
         '200':
           description: Successful response
-  /profile/suppliers/{supplierId}/products/{productId}:
+  /suppliers/{supplierId}/products/{productId}:
     post:
         summary: Link the product to the supplier
         security:
@@ -307,7 +370,7 @@ paths:
       responses:
         '200':
           description: Successful supplier deletion
-  /profile/products/{productId}/suppliers/{supplierId}:
+  /products/{productId}/suppliers/{supplierId}:
     post:
         summary: Link the supplier to the product
         security:

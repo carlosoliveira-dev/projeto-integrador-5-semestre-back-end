@@ -12,7 +12,8 @@ const sequelize = new Sequelize({
 async function initDatabase() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true }); 
+    // await sequelize.sync({ alter: true }); 
+    await sequelize.sync(); 
   } catch (error) {
     console.error('Erro ao conectar com o banco de dados:', error);
     process.exit(1);
