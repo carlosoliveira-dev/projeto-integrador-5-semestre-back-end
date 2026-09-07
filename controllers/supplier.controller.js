@@ -157,9 +157,24 @@ const linkProduct = async (req, res) => {
 }
 
 const unlinkProduct = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
-    });
+ try {
+    const { supplierId, productId } = req.params;
+
+    const supplier = await Supplier.findByPk(supplierId);
+    const product = await Product.findByPk(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Produto não encontrado.' });
+    }else if(!supplier) {
+      return res.status(404).json({ error: 'Fornecedor não encontrado.' });
+    }
+
+    await supplier.removeProduct(product);
+    return res.status(200).json({ message: 'Produto desassociado com sucesso.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro interno ao realizar a associação.' });
+  }
 }
 
 module.exports = {

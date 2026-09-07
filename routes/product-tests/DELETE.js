@@ -26,7 +26,7 @@ function DELETEProduct(app, request, Product, User, sequelize) {
     expect(res.body.message).toBe('Produto excluído com sucesso!');
   });
 
-   it('deve desassociar o produto do fornecedor', async () => {
+   it('deve desassociar o fornecedor do produto', async () => {
     const resUser = await request(app)
       .post('/users/signup')
       .send({
