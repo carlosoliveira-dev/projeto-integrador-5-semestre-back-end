@@ -1,4 +1,5 @@
 const { Supplier, User } = require('../database/models/models');
+const { sequelize } = require('../database/connection');
 
 const getSuppliers = async (req, res) => {
     try {
@@ -109,9 +110,29 @@ const deleteSupplier = async (req, res) => {
 }
 
 const getProductsBySupplierId = async (req, res) => {
-    return res.status(400).json({
-        error: 'not implemented yet'
+ try {
+    const { supplierId } = req.params;
+    const { userId } = req.body;
+
+    const supplier = await Supplier.findByPk(supplierId);
+    const user = await User.findByPk(userId);
+
+    if (!supplier) {
+      return res.status(404).json({ error: 'Fornecedor não encontrado.' });
+    }else if(!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    const ProductSupplier = sequelize.models.ProductSupplier;
+    const products = await ProductSupplier.findAll({
+      where: { supplierId },
     });
+ 
+    return res.status(200).json(products);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro interno ao realizar a busca dos produtos.' });
+  }
 };
 
 const linkProduct = async (req, res) => {

@@ -16,7 +16,7 @@ router.post('/:userId', addSupplier);
 router.get('/:supplierId', getSupplier);
 router.put('/:supplierId', updateSupplier);
 router.delete('/:supplierId', deleteSupplier);
-router.get('/:id/products', getProductsBySupplierId);
+router.get('/:supplierId/products', getProductsBySupplierId);
 router.post('/:supplierId/products/:productId', linkProduct);
 router.delete('/:supplierId/products/:productId', unlinkProduct);
 

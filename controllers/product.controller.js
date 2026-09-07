@@ -132,7 +132,9 @@ const getSuppliersByProductId = async (req, res) => {
     }
 
     const ProductSupplier = sequelize.models.ProductSupplier;
-    const suppliers = await ProductSupplier.findAll();
+    const suppliers = await ProductSupplier.findAll({
+         where: { productId },
+    });
  
     return res.status(200).json(suppliers);
   } catch (error) {
