@@ -16,6 +16,10 @@ tags:
     description: Gerenciamento de login e autenticação dos usuários
   - name: Profiles
     description: Gerenciamento de perfis de usuários
+  - name: Products
+    description: Gerenciamento de produtos
+  - name: Suppliers
+    description: Gerenciamento de fornecedores
 paths:
   /users/signup:
     post:
@@ -67,7 +71,7 @@ paths:
           description: Successful response
   /profile:
     get:
-      summary: Get user's profile
+      summary: Get all user's profile
       tags:
       - Profiles
       security:
@@ -155,6 +159,8 @@ paths:
   /products:
     get:
       summary: Get all user's products
+      tags:
+        - Products
       security:
         - bearerAuth: []
       responses:
@@ -162,6 +168,8 @@ paths:
           description: Successful response
     post:
       summary: Create a new product for the user
+      tags:
+        - Products
       security:
         - bearerAuth: []
       requestBody:
@@ -181,6 +189,8 @@ paths:
   /products/{productId}:
     get:
       summary: Get a user's product by ID
+      tags:
+        - Products
       security:
         - bearerAuth: []
       parameters:
@@ -194,6 +204,8 @@ paths:
           description: Successful response
     put:
       summary: Update a user's product by ID
+      tags:
+        - Products
       security:
         - bearerAuth: []
       requestBody:
@@ -220,6 +232,8 @@ paths:
           description: Successful product update
     delete:
       summary: Delete a user's product by ID
+      tags:
+        - Products
       security:
         - bearerAuth: []
       parameters:
@@ -234,6 +248,8 @@ paths:
   /suppliers:
     get:
       summary: Get all user's suppliers
+      tags:
+        - Suppliers 
       security:
         - bearerAuth: []
       responses:
@@ -241,6 +257,8 @@ paths:
           description: Successful response
     post:
       summary: Create a new supplier for the user
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       requestBody:
@@ -260,6 +278,8 @@ paths:
   /suppliers/{supplierId}:
     get:
       summary: Get a user's supplier by ID
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       parameters:
@@ -273,6 +293,8 @@ paths:
           description: Successful response
     put:
       summary: Update a user's supplier by ID
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       requestBody:
@@ -299,6 +321,8 @@ paths:
           description: Successful supplier update
     delete:
       summary: Delete a user's supplier by ID
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       parameters:
@@ -313,6 +337,8 @@ paths:
   /suppliers/{supplierId}/products:
     get:
       summary: Get products by supplier ID
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       parameters:
@@ -327,6 +353,8 @@ paths:
   /products/{productId}/suppliers:
     get:
       summary: Get suppliers by product ID
+      tags:
+        - Products
       security:
         - bearerAuth: []
       parameters:
@@ -341,6 +369,8 @@ paths:
   /suppliers/{supplierId}/products/{productId}:
     post:
         summary: Link the product to the supplier
+        tags:
+        - Suppliers
         security:
           - bearerAuth: []
         requestBody:
@@ -359,6 +389,8 @@ paths:
             description: Product successfully associated with supplier
     delete:
       summary: Unlink the product from the supplier
+      tags:
+        - Suppliers
       security:
         - bearerAuth: []
       parameters:
@@ -373,6 +405,8 @@ paths:
   /products/{productId}/suppliers/{supplierId}:
     post:
         summary: Link the supplier to the product
+        tags:
+          - Products
         security:
           - bearerAuth: []
         requestBody:
@@ -391,6 +425,8 @@ paths:
             description: Supplier successfully associated with product
     delete:
           summary: Unlink the supplier from the product
+          tags:
+            - Products
           security:
             - bearerAuth: []
           parameters:
