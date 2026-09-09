@@ -120,17 +120,12 @@ const deleteProduct = async (req, res) => {
 const getSuppliersByProductId = async (req, res) => {
  try {
     const { productId } = req.params;
-    const { userId } = req.body;
 
     const product = await Product.findByPk(productId);
-    const user = await User.findByPk(userId);
 
     if (!product) {
       return res.status(404).json({ error: 'Produto não encontrado.' });
-    }else if(!user) {
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
     }
-
     const ProductSupplier = sequelize.models.ProductSupplier;
     const suppliers = await ProductSupplier.findAll({
          where: { productId },

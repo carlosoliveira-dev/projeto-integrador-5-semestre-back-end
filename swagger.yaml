@@ -166,12 +166,20 @@ paths:
       responses:
         '200':
           description: Successful response
+  /products/{userId}:  
     post:
       summary: Create a new product for the user
       tags:
         - Products
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+          description: User ID
       requestBody:
         required: true
         content:
@@ -179,7 +187,7 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                name:
                   type: string
                 description:
                   type: string
@@ -195,7 +203,7 @@ paths:
         - bearerAuth: []
       parameters:
         - in: path
-          name: taskId
+          name: productId
           required: true
           schema:
             type: string
@@ -215,11 +223,11 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                userId:
+                  type: string
+                name:
                   type: string
                 description:
-                  type: string
-                status:
                   type: string
       parameters:
         - in: path
@@ -255,12 +263,19 @@ paths:
       responses:
         '200':
           description: Successful response
+  /suppliers/{userId}:  
     post:
       summary: Create a new supplier for the user
       tags:
         - Suppliers
       security:
         - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -268,9 +283,11 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                companyName:
                   type: string
-                description:
+                cnpj:
+                  type: string
+                primaryContactName:
                   type: string
       responses:
         '200':
@@ -304,15 +321,15 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                companyName:
                   type: string
-                description:
+                cnpj:
                   type: string
-                status:
+                primaryContactName:
                   type: string
       parameters:
         - in: path
-          name: productId
+          name: supplierId
           required: true
           schema:
             type: string
@@ -359,7 +376,7 @@ paths:
         - bearerAuth: []
       parameters:
         - in: path
-          name: supplierId
+          name: productId
           required: true
           schema:
             type: string
@@ -373,17 +390,17 @@ paths:
         - Suppliers
         security:
           - bearerAuth: []
-        requestBody:
+        parameters:
+        - in: path
+          name: supplierId
           required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  title:
-                    type: string
-                  description:
-                    type: string
+          schema:
+            type: string
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
         responses:
           '200':
             description: Product successfully associated with supplier
@@ -399,6 +416,11 @@ paths:
           required: true
           schema:
             type: string
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful supplier deletion
@@ -409,17 +431,17 @@ paths:
           - Products
         security:
           - bearerAuth: []
-        requestBody:
+        parameters:
+        - in: path
+          name: productId
           required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  title:
-                    type: string
-                  description:
-                    type: string
+          schema:
+            type: string
+        - in: path
+          name: supplierId
+          required: true
+          schema:
+            type: string
         responses:
           '200':
             description: Supplier successfully associated with product
@@ -430,11 +452,16 @@ paths:
           security:
             - bearerAuth: []
           parameters:
-            - in: path
-              name: supplierId
-              required: true
-              schema:
-                type: string
+          - in: path
+            name: productId
+            required: true
+            schema:
+              type: string
+          - in: path
+            name: supplierId
+            required: true
+            schema:
+              type: string
           responses:
             '200':
               description: Successful supplier deletion
