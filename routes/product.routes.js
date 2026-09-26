@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { verifyToken } = require('../middlewares/authMiddleware');
 const {
   getProducts,
   getProduct,
@@ -10,6 +11,8 @@ const {
   linkSupplier,
   unlinkSupplier
 } = require('../controllers/product.controller')
+
+router.use(verifyToken);
 
 router.get('/', getProducts);
 router.post('/:userId', addProduct);

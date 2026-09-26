@@ -18,9 +18,11 @@ function GETsuppliers(app, request) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -43,6 +45,7 @@ function GETsuppliers(app, request) {
 
     const resLink = await request(app)
       .post(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201);
     
     const resGetProducts = await request(app)

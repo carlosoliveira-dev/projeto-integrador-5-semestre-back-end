@@ -1,26 +1,31 @@
-function DELETEProduct(app, request, Product, User, sequelize) {
+function DELETEProduct(app, request, Product, sequelize) {
  describe('DELETE /products', () => {
   it('deve excluir o produto', async () => {
-    const newUser = await User.create({
-      name: 'Carlos',
-      email: 'carlos@gmail.com',
-      password: '123'
-    });
+    const resUser = await request(app)
+      .post('/users/signup')
+      .send({
+        name: 'Carlos',
+        email: 'carlos@gmail.com',
+        password: '123'
+      });
+    const token = resUser.body.token;
+    const user = resUser.body.user;
 
-    const newProduct = await newUser.createProduct({
+    const resProduct = await request(app)
+      .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
         name: 'smartphone',
-        description: 'easy to use',
-    });
- 
-    const user = await User.findOne({
-      include: [Product]
-    });
+        description: 'easy to use'
+      });
+    const product = await Product.findByPk(resProduct.body.id);
 
-    expect(user.Products[0].dataValues.name).toBe('smartphone');
-    expect(user.Products[0].dataValues.description).toBe('easy to use');
+    expect(product.name).toBe('smartphone');
+    expect(product.description).toBe('easy to use');
     
     const res = await request(app)
-      .delete(`/products/${user.Products[0].dataValues.id}`);
+      .delete(`/products/${product.id}`)
+      .set('Authorization', `Bearer ${token}`);
     
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Produto excluído com sucesso!');
@@ -36,9 +41,11 @@ function DELETEProduct(app, request, Product, User, sequelize) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -61,6 +68,7 @@ function DELETEProduct(app, request, Product, User, sequelize) {
 
     const resLink = await request(app)
       .post(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201);
     
     const ProductSupplier = sequelize.models.ProductSupplier;
@@ -73,6 +81,7 @@ function DELETEProduct(app, request, Product, User, sequelize) {
 
     const res = await request(app)
       .delete(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
     const linksRemoved = await ProductSupplier.findAll();

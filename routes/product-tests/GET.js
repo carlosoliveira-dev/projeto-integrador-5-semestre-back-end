@@ -1,8 +1,23 @@
 function GETProducts(app, request, Product) {
  describe('GET /products', () => {
+  it('deve negar acesso sem token', async () => {
+    await request(app)
+      .get('/products')
+      .expect(401);
+  });
+
   it('deve retornar uma lista vazia de produtos', async () => {
+    const resUser = await request(app)
+      .post('/users/signup')
+      .send({
+        name: 'Carlos',
+        email: 'carlos@gmail.com',
+        password: '123'
+      });
+
     const res = await request(app)
       .get('/products')
+      .set('Authorization', `Bearer ${resUser.body.token}`)
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200);
     expect(res.body).toEqual([]);
@@ -18,9 +33,11 @@ function GETProducts(app, request, Product) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const p1 = await request(app)
     .post(`/products/${user.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       name: 'smartphone',
       description: 'baixa performance'
@@ -28,6 +45,7 @@ function GETProducts(app, request, Product) {
 
     const p2 = await request(app)
     .post(`/products/${user.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       name: 'Notebook',
       description: 'media performance'
@@ -35,6 +53,7 @@ function GETProducts(app, request, Product) {
 
     const p3 = await request(app)
     .post(`/products/${user.id}`)
+    .set('Authorization', `Bearer ${token}`)
     .send({
       name: 'Computador',
       description: 'alta performance'
@@ -42,6 +61,7 @@ function GETProducts(app, request, Product) {
 
     const res = await request(app)
       .get('/products')
+      .set('Authorization', `Bearer ${token}`)
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200);
 
@@ -63,9 +83,11 @@ function GETProducts(app, request, Product) {
     });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
     
     const res = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'produto',
         description: 'alta performance'
@@ -88,9 +110,11 @@ function GETProducts(app, request, Product) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -113,10 +137,12 @@ function GETProducts(app, request, Product) {
 
     const resLink = await request(app)
       .post(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201);
     
     const resGetSuppliers = await request(app)
       .get(`/products/${product.id}/suppliers/`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         userId: user.id
       })

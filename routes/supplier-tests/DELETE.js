@@ -44,9 +44,11 @@ function DELETESupplier(app, request) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -81,6 +83,7 @@ function DELETESupplier(app, request) {
 
     const res = await request(app)
       .delete(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
     const linksRemoved = await ProductSupplier.findAll();

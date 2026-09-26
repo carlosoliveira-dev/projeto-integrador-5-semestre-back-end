@@ -10,9 +10,11 @@ function PUTProduct(app, request, Product) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -20,6 +22,7 @@ function PUTProduct(app, request, Product) {
 
     const res = await request(app)
       .put(`/products/${resProduct.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         userId: user.id,
         name: 'Notebook Updated',

@@ -10,9 +10,11 @@ function POSTProducts(app, request, Product, sequelize) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const res = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -40,9 +42,11 @@ function POSTProducts(app, request, Product, sequelize) {
       });
 
     const user = resUser.body.user;
+    const token = resUser.body.token;
 
     const resProduct = await request(app)
       .post(`/products/${user.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Notebook',
         description: 'baixa performance'
@@ -65,6 +69,7 @@ function POSTProducts(app, request, Product, sequelize) {
 
     const res = await request(app)
       .post(`/products/${product.id}/suppliers/${supplier.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201);
     
     const ProductSupplier = sequelize.models.ProductSupplier;
