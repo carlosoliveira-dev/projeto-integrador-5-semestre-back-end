@@ -3,12 +3,19 @@ const swaggerUi = require('swagger-ui-express');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const express = require('express');
+const cors = require('cors');
 const userRoutes = require('./routes/user.routes');
 const profileRoutes = require('./routes/profile.routes');
 const productRoutes = require('./routes/product.routes');
 const supplierRoutes = require('./routes/supplier.routes');
 
 const app = express()
+app.use(cors({
+  origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204
+}));
 app.use(express.json());
 
 const swaggerDocument = yaml.load(fs.readFileSync('swagger.yaml', 'utf8'));
