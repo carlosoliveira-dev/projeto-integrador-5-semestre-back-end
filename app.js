@@ -11,7 +11,10 @@ const supplierRoutes = require('./routes/supplier.routes');
 
 const app = express()
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_ORIGIN,
+    "http://localhost:3000",
+  ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 204
