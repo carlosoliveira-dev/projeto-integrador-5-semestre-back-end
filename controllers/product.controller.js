@@ -1,6 +1,4 @@
-const { Product } = require("../database/models/product");
-const { User } = require('../database/models/models');
-const { Supplier } = require('../database/models/models');
+const { Product, User, Supplier } = require('../database/models/models');
 const { sequelize } = require('../database/connection')
 
 const getProducts = async (req, res) => {

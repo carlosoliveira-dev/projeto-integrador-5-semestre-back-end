@@ -1,7 +1,7 @@
-const { User } = require('./user');
-const { Profile } = require('./profile');
-const { Product } = require('./product');
-const { Supplier } = require('./supplier');
+const { User } = require('./User');
+const { Profile } = require('./Profile');
+const { Product } = require('./Product');
+const { Supplier } = require('./Supplier');
 
 User.hasOne(Profile, {
   foreignKey: 'userId',
