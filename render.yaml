@@ -4,7 +4,7 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: npm ci
+    buildCommand: npm_config_build_from_source=true npm ci
     startCommand: npm start
     envVars:
       - key: NODE_VERSION

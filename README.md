@@ -22,7 +22,7 @@ npm t
 
 ## Deploy no Render
 
-O arquivo `render.yaml` configura o serviço web no plano gratuito. O SQLite fica no sistema de arquivos temporário da instância, então os dados podem ser apagados ao reiniciar ou fazer um novo deploy. Para implantar:
+O arquivo `render.yaml` configura o serviço web no plano gratuito e compila o módulo nativo do SQLite no próprio Render para compatibilidade com o Linux da instância. O SQLite fica no sistema de arquivos temporário da instância, então os dados podem ser apagados ao reiniciar ou fazer um novo deploy. Para implantar:
 
 1. Envie este repositório para o GitHub.
 2. No Render, escolha **New > Blueprint** e conecte o repositório.
